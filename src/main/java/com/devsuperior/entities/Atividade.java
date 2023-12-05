@@ -1,6 +1,5 @@
 package com.devsuperior.entities;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,10 +8,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,19 +23,16 @@ public class Atividade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String nome;
-
     private String descricao;
-
     private Double preco;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @OneToOne(mappedBy = "atividade", cascade = CascadeType.ALL)
-    private Bloco bloco;
+    @OneToMany(mappedBy = "atividade")
+    private List<Bloco> blocos = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "tb_atividade_participante",
@@ -47,13 +45,12 @@ public class Atividade {
     public Atividade() {
     }
 
-    public Atividade(Integer id, String nome, String descricao, Double preco, Categoria categoria, Bloco bloco) {
+    public Atividade(Integer id, String nome, String descricao, Double preco, Categoria categoria) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.categoria = categoria;
-        this.bloco = bloco;
     }
 
     public Integer getId() {
@@ -96,12 +93,8 @@ public class Atividade {
         this.categoria = categoria;
     }
 
-    public Bloco getBloco() {
-        return bloco;
-    }
-
-    public void setBloco(Bloco bloco) {
-        this.bloco = bloco;
+    public List<Bloco> getBlocos() {
+        return blocos;
     }
 
     public Set<Participante> getParticipantes() {
